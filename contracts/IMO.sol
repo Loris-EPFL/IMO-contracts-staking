@@ -20,13 +20,5 @@ contract IMO is OFT {
     function mint(address _to, uint256 _amount) onlyOwner() public {
         _mint(_to, _amount);
     }
-
-    
-    function transferToLocker(address sender, uint256 amount) external returns (bool) {
-        require(msg.sender == locker, "Not locker");
-        _transfer(sender, locker, amount);
-        return true;
-    }
-
     
 }

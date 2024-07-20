@@ -24,4 +24,6 @@ remappings = [
     'forge-std/=node_modules/@layerzerolabs/toolbox-foundry/lib/forge-std',
     '@layerzerolabs/=node_modules/@layerzerolabs/',
     '@openzeppelin/=node_modules/@openzeppelin/',
+    '@balancer-labs/=node_modules/@balancer-labs/',
+
 ]

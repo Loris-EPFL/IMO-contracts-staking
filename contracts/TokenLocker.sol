@@ -7,6 +7,7 @@ import "./dependencies/SystemStart.sol";
 import "./interfaces/IPrismaCore.sol";
 import "./interfaces/IIncentiveVoting.sol";
 import "./interfaces/IPrismaToken.sol";
+import "./interfaces/IWeightedPool2Tokens.sol";
 import {IOFT} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/interfaces/IOFT.sol";
 
 /**
@@ -36,7 +37,7 @@ contract TokenLocker is PrismaOwnable, SystemStart {
 
 
 
-    IPrismaToken public immutable lockToken;
+    IWeightedPool2Tokens public immutable lockToken;
     IIncentiveVoting public immutable incentiveVoter;
     IPrismaCore public immutable prismaCore;
     address public immutable deploymentManager;
@@ -113,7 +114,7 @@ contract TokenLocker is PrismaOwnable, SystemStart {
 
     constructor(
         address _prismaCore,
-        IPrismaToken _token,
+        IWeightedPool2Tokens _token,
         IIncentiveVoting _voter,
         address _manager,
         uint256 _lockToTokenRatio
@@ -477,11 +478,11 @@ contract TokenLocker is PrismaOwnable, SystemStart {
     ) external returns (bool) {
         require(_weeks > 0, "Min 1 week");
         require(_amount > 0, "Amount must be nonzero");
-        require(msg.sender == locker, "Not locker"); //only locker contract can lock tokens
+        require(msg.sender == locker, "Not locker"); //only locker contract can lock tokens //TODO why ?
 
         _lock(_account, _amount, _weeks);
-        
-        lockToken.transferToLocker(msg.sender, _amount * lockToTokenRatio);
+        lockToken.transferFrom(_account, locker,  _amount * lockToTokenRatio); //required msg.sender is locker 
+        //lockToken.transferToLocker(msg.sender, _amount * lockToTokenRatio);
 
         return true;
     }
@@ -651,11 +652,14 @@ contract TokenLocker is PrismaOwnable, SystemStart {
         // write updated bitfield to storage
         accountData.updateWeeks[systemWeek / 256] = bitfield[0];
         accountData.updateWeeks[(systemWeek / 256) + 1] = bitfield[1];
+        lockToken.transferFrom(_account, locker,  increasedAmount * lockToTokenRatio); //required msg.sender is locker 
 
+        /*
         lockToken.transferToLocker(
             msg.sender,
             increasedAmount * lockToTokenRatio
         );
+        */
 
         // update account and total weight / decay storage values
         accountWeeklyWeights[_account][systemWeek] = uint40(
@@ -861,11 +865,14 @@ contract TokenLocker is PrismaOwnable, SystemStart {
         AccountData storage accountData = accountLockData[msg.sender];
         uint256 unlocked = accountData.unlocked;
         require(unlocked > 0, "No unlocked tokens");
+        require(msg.sender == locker, "Not locker"); //need msg.sender to be balancer BPT token contrcat (i.E locker)
         accountData.unlocked = 0;
         if (_weeks > 0) {
             _lock(msg.sender, unlocked, _weeks);
         } else {
-            lockToken.transfer(msg.sender, unlocked * lockToTokenRatio);
+
+            bool isTransferSuccess = lockToken.transferFrom(msg.sender, locker, unlocked * lockToTokenRatio);
+            require(isTransferSuccess);
             emit LocksWithdrawn(msg.sender, unlocked, 0);
         }
         return true;
@@ -1001,7 +1008,7 @@ contract TokenLocker is PrismaOwnable, SystemStart {
         );
 
         lockToken.transfer(msg.sender, amountToWithdraw);
-        lockToken.transfer(prismaCore.feeReceiver(), penaltyTotal);
+        lockToken.transfer(prismaCore.feeReceiver(), penaltyTotal); //send penatly tokens to address controlled by DAO
         emit LocksWithdrawn(msg.sender, amountToWithdraw, penaltyTotal);
 
         return amountToWithdraw;
