@@ -5,14 +5,13 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { OFT } from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/OFT.sol";
 
 contract IMO is OFT {
-    string oftName = "IMO";
-    string oftSymbol = "IMO";
-    address lzEndpoint = msg.sender;
-    address public immutable locker; //address of the locker contract
-    address delegate = address(msg.sender); //address of the delegator (default contract deployer msg.sender, might change later)
-    uint public IMOtotalSupply = 20e6;
+    //string oftName = "IMO";
+    //string oftSymbol = "IMO";
+   // address lzEndpoint = 0x6EDCE65403992e310A62460808c4b910D972f10f; //base sepolia
+    //address delegate = address(msg.sender); //address of the delegator (default contract deployer msg.sender, might change later)
+    uint public IMOtotalSupply = 20e24;
 
-    constructor() OFT(oftName, oftSymbol, lzEndpoint, delegate) Ownable(delegate) {
+    constructor(string memory oftName, string memory oftSymbol, address lzEndpoint, address delegate) OFT(oftName, oftSymbol, lzEndpoint, delegate) Ownable(delegate) {
         _mint(delegate, IMOtotalSupply);
     }
 
