@@ -3,13 +3,13 @@ import { EndpointId } from '@layerzerolabs/lz-definitions'
 import type { OAppOmniGraphHardhat, OmniPointHardhat } from '@layerzerolabs/toolbox-hardhat'
 
 
-const baseSepoliaContract: OmniPointHardhat = {
-    eid: EndpointId.BASESEP_V2_TESTNET,
+const baseContract: OmniPointHardhat = {
+    eid: EndpointId.BASE_MAINNET,
     contractName: 'IMO',
 }
 
-const bscTestnetContract: OmniPointHardhat = {
-    eid: EndpointId.BSC_TESTNET,
+const bscContract: OmniPointHardhat = {
+    eid: EndpointId.BSC_MAINNET,
     contractName: 'IMO',
 }
 
@@ -18,20 +18,20 @@ const bscTestnetContract: OmniPointHardhat = {
 const config: OAppOmniGraphHardhat = {
     contracts: [
         {
-            contract: bscTestnetContract,
+            contract: bscContract,
         },
         {
-            contract: baseSepoliaContract,
+            contract: baseContract,
         },
     ],
     connections: [
         {
-            from: bscTestnetContract,
-            to: baseSepoliaContract,
+            from: bscContract,
+            to: baseContract,
         },
         {
-            from: baseSepoliaContract,
-            to: bscTestnetContract,
+            from: bscContract,
+            to: baseContract,
         },
     ],
 }

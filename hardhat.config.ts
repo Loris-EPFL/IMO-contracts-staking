@@ -49,14 +49,14 @@ const config: HardhatUserConfig = {
         ],
     },
     networks: {
-        BaseSep: {
-            eid: EndpointId.BASESEP_V2_TESTNET,
-            url: process.env.RPC_URL_BASESEP_V2_TESTNET || 'https://base-sepolia-rpc.publicnode.com',
+        Base: {
+            eid: EndpointId.BASE_MAINNET,
+            url: process.env.RPC_URL_BASE_MAINNET || 'https://base.llamarpc.com',
             accounts,
         },
         BSC: {
-            eid: EndpointId.BSC_TESTNET,
-            url: process.env.BSC_TESTNET || 'https://bsc-testnet.public.blastapi.io',
+            eid: EndpointId.BSC_MAINNET,
+            url: process.env.RPC_URL_BSC_MAINNET || 'https://binance.llamarpc.com',
             accounts,
         },
     },
