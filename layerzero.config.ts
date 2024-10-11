@@ -2,57 +2,36 @@ import { EndpointId } from '@layerzerolabs/lz-definitions'
 
 import type { OAppOmniGraphHardhat, OmniPointHardhat } from '@layerzerolabs/toolbox-hardhat'
 
-const sepoliaContract: OmniPointHardhat = {
-    eid: EndpointId.SEPOLIA_V2_TESTNET,
-    contractName: 'MyOFT',
+
+const baseContract: OmniPointHardhat = {
+    eid: EndpointId.BASE_MAINNET,
+    contractName: 'IMO',
 }
 
-const fujiContract: OmniPointHardhat = {
-    eid: EndpointId.AVALANCHE_V2_TESTNET,
-    contractName: 'MyOFT',
+const bscContract: OmniPointHardhat = {
+    eid: EndpointId.BSC_MAINNET,
+    contractName: 'IMO',
 }
 
-const amoyContract: OmniPointHardhat = {
-    eid: EndpointId.AMOY_V2_TESTNET,
-    contractName: 'MyOFT',
-}
+
 
 const config: OAppOmniGraphHardhat = {
     contracts: [
         {
-            contract: fujiContract,
+            contract: bscContract,
         },
         {
-            contract: sepoliaContract,
-        },
-        {
-            contract: amoyContract,
+            contract: baseContract,
         },
     ],
     connections: [
         {
-            from: fujiContract,
-            to: sepoliaContract,
+            from: bscContract,
+            to: baseContract,
         },
         {
-            from: fujiContract,
-            to: amoyContract,
-        },
-        {
-            from: sepoliaContract,
-            to: fujiContract,
-        },
-        {
-            from: sepoliaContract,
-            to: amoyContract,
-        },
-        {
-            from: amoyContract,
-            to: sepoliaContract,
-        },
-        {
-            from: amoyContract,
-            to: fujiContract,
+            from: bscContract,
+            to: baseContract,
         },
     ],
 }
