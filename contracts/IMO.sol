@@ -19,5 +19,9 @@ contract IMO is OFT {
     constructor(string memory oftName, string memory oftSymbol, address lzEndpoint, address delegate) OFT(oftName, oftSymbol, lzEndpoint, delegate) Ownable(delegate) {
         _mint(delegate, 20*10e6*10e18); //Mint Total Supply (20 Millions IMO) to delegate(owner)
     }
+
+    function burn(uint256 amount) public {
+        _burn(msg.sender, amount);
+    }
     
 }
